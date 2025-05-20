@@ -42,7 +42,6 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 		target = Data.Target.AbilityActorInfo->AvatarActor.Get();
 		rpgCharacter = Cast<ARPGCharacter>(target);
 	}
-
 	if (Data.EvaluatedData.Attribute == GetHealthAttribute())
 	{
 		SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth()));
@@ -51,7 +50,6 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 			rpgCharacter->HandleHealthChange(DeltaValue, rpgCharacter);
 		}
 	}
-
 	if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
 	{
 		SetStamina(FMath::Clamp(GetStamina(), 0.0f, GetMaxStamina()));
@@ -98,6 +96,10 @@ void URPGAttributeSet::PreAttributeChange(const FGameplayAttribute& attribute, f
 	if (attribute == GetMaxAdrenalineAttribute())
 	{
 		AdjustAttributeForMaxChange(Adrenaline, MaxAdrenaline, NewValue, GetAdrenalineAttribute());
+	}
+	if (attribute == GetMaxExperienceAttribute())
+	{
+		SetExperience(0);
 	}
 }
 
@@ -148,8 +150,6 @@ void URPGAttributeSet::AdjustAttributeForMaxChange(const FGameplayAttributeData&
 
 	if (!FMath::IsNearlyEqual(currentMax, newMax) && component)
 	{
-		auto currentVal = affectedAttribute.GetCurrentValue();
-		auto newDelta = currentMax > 0.0f ? (currentVal * newMax / currentMax) - currentVal : newMax;
-		component->ApplyModToAttributeUnsafe(affectedAttributeProperty, EGameplayModOp::Additive, newDelta);
+		component->ApplyModToAttributeUnsafe(affectedAttributeProperty, EGameplayModOp::Additive, newMax);
 	}
 }
