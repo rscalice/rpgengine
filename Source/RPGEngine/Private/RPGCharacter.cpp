@@ -109,6 +109,19 @@ bool ARPGCharacter::ActivateAbilitiesWithTag(FGameplayTagContainer gameplayTags,
 	return abilitySystem->TryActivateAbilitiesByTag(gameplayTags, AllowRemoteActivation);
 }
 
+bool ARPGCharacter::ActivateMeleeSwordAbility(bool allowRemote)
+{
+	UE_LOG(LogTemp, Warning, TEXT("ActivateMeleeSwordAbility"));
+	if (!IsValid(abilitySystem) && !IsValid(MeleeSwordAbility))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ActivateMeleeSwordAbility::NOT VALID"));
+		return false;
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("ActivateMeleeSwordAbility::VALID"));
+	return abilitySystem->TryActivateAbility(MeleeAbilitySpecHandle);
+}
+
 // Called when the game starts or when spawned
 void ARPGCharacter::BeginPlay()
 {
@@ -130,6 +143,16 @@ void ARPGCharacter::setTestAbilities()
 			abilitySystem->GiveAbility(FGameplayAbilitySpec(TestAbility, GetCharacterLevel(), INDEX_NONE, this));
 		}
 	}
+}
+
+void ARPGCharacter::setMeleeAbilities()
+{
+	if (!IsValid(abilitySystem))
+	{
+		return;
+	}
+
+	MeleeAbilitySpecHandle = abilitySystem->GiveAbility(FGameplayAbilitySpec(MeleeSwordAbility, GetCharacterLevel(),INDEX_NONE, this));
 }
 
 // Called every frame
@@ -166,6 +189,7 @@ void ARPGCharacter::PossessedBy(AController* newController)
 	}
 
 	ApplyDefaultAttributeEffects();
+	setMeleeAbilities();
 }
 
 void ARPGCharacter::HandleHealthChange(float deltaValue, AActor* causer)

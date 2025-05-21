@@ -65,6 +65,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "RPG Responses")
 	void OnDead();
 
+
+	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee|Sword")
+	bool ActivateMeleeSwordAbility(bool allowRemote = true);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -81,14 +84,20 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RPG Attributes|Debug")
 	TSubclassOf<class UGameplayEffect> defaultEffects;
 
-
-	UPROPERTY(EditAnywhere, Category = "RPG Attributes")
+	UPROPERTY(EditAnywhere, Category = "RPG Abilities|Debug")
 	bool enableTestAbilities;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RPG Attributes|Debug")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RPG Abilities|Debug")
 	TArray<TSubclassOf<class UGameplayAbility>> TestAbilities;
 
 	virtual void setTestAbilities();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RPG Abilities|Melee|Sword")
+	TSubclassOf<class UGameplayAbility> MeleeSwordAbility;
+
+	FGameplayAbilitySpecHandle MeleeAbilitySpecHandle;
+
+	virtual void setMeleeAbilities();
 
 public:
 
