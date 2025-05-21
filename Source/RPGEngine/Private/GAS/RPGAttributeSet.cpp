@@ -68,7 +68,7 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	}
 	if (Data.EvaluatedData.Attribute == GetExperienceAttribute())
 	{
-		float difference = GetMaxExperience() - GetExperience();
+		float difference =  GetExperience() - GetMaxExperience();
 
 		if (IsValid(rpgCharacter))
 		{
