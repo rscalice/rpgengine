@@ -68,6 +68,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee|Sword")
 	bool ActivateMeleeSwordAbility(bool allowRemote = true);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -82,7 +83,7 @@ protected:
 	int32 characterLevel;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RPG Attributes|Debug")
-	TSubclassOf<class UGameplayEffect> defaultEffects;
+	TArray<TSubclassOf<class UGameplayEffect>> defaultEffects;
 
 	UPROPERTY(EditAnywhere, Category = "RPG Abilities|Debug")
 	bool enableTestAbilities;

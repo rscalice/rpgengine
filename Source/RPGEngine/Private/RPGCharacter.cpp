@@ -228,12 +228,17 @@ void ARPGCharacter::ApplyDefaultAttributeEffects()
 {
 	FGameplayEffectContextHandle context = abilitySystem->MakeEffectContext();
 	context.AddSourceObject(this);
-	FGameplayEffectSpecHandle handle = abilitySystem->MakeOutgoingSpec(defaultEffects, characterLevel, context);
 
-	if (handle.IsValid())
+	for (TSubclassOf<class UGameplayEffect>& defaultEffect : defaultEffects)
 	{
-		FActiveGameplayEffectHandle activeHandle = abilitySystem->ApplyGameplayEffectSpecToTarget(*handle.Data.Get(), abilitySystem);
+		FGameplayEffectSpecHandle handle = abilitySystem->MakeOutgoingSpec(defaultEffect, characterLevel, context);
+
+		if (handle.IsValid())
+		{
+			FActiveGameplayEffectHandle activeHandle = abilitySystem->ApplyGameplayEffectSpecToTarget(*handle.Data.Get(), abilitySystem);
+		}
 	}
+	
 
 }
 

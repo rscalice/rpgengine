@@ -52,8 +52,10 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	}
 	if (Data.EvaluatedData.Attribute == GetStaminaAttribute())
 	{
+		bool staminaOverFlow = GetStamina() > GetMaxStamina() ? FMath::IsNearlyEqual(GetStamina() - DeltaValue, GetMaxStamina()) : false;
+
 		SetStamina(FMath::Clamp(GetStamina(), 0.0f, GetMaxStamina()));
-		if (IsValid(rpgCharacter))
+		if (IsValid(rpgCharacter) && !staminaOverFlow)
 		{
 			rpgCharacter->HandleStaminaChange(DeltaValue, rpgCharacter);
 		}
@@ -68,7 +70,7 @@ void URPGAttributeSet::PostGameplayEffectExecute(const FGameplayEffectModCallbac
 	}
 	if (Data.EvaluatedData.Attribute == GetExperienceAttribute())
 	{
-		float difference =  GetExperience() - GetMaxExperience();
+		float difference = GetExperience() - GetMaxExperience();
 
 		if (IsValid(rpgCharacter))
 		{
