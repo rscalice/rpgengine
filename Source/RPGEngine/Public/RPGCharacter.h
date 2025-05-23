@@ -69,6 +69,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee|Sword")
 	bool ActivateMeleeSwordAbility(bool allowRemote = true);
 
+	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee")
+	virtual void GetActiveAbilitiesWithTag(FGameplayTagContainer abilityTags, TArray<UGameplayAbility*>& abilities, bool MatchExactTag);
+
+
+	UFUNCTION(BlueprintCallable, Category = "RPG Abilities")
+	virtual void ApplyGameplayEffect(TSubclassOf<UGameplayEffect> effect);
+
+
+	UFUNCTION(BlueprintCallable, Category = "RPG Abilities")
+	virtual bool CanApplyGameplayEffect(TSubclassOf<UGameplayEffect> effect);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

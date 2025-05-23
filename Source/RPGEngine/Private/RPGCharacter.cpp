@@ -111,15 +111,61 @@ bool ARPGCharacter::ActivateAbilitiesWithTag(FGameplayTagContainer gameplayTags,
 
 bool ARPGCharacter::ActivateMeleeSwordAbility(bool allowRemote)
 {
-	UE_LOG(LogTemp, Warning, TEXT("ActivateMeleeSwordAbility"));
 	if (!IsValid(abilitySystem) && !IsValid(MeleeSwordAbility))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ActivateMeleeSwordAbility::NOT VALID"));
 		return false;
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("ActivateMeleeSwordAbility::VALID"));
 	return abilitySystem->TryActivateAbility(MeleeAbilitySpecHandle);
+}
+
+void ARPGCharacter::GetActiveAbilitiesWithTag(FGameplayTagContainer abilityTags, TArray<UGameplayAbility*>& abilities, bool MatchExactTag)
+{
+	if (!IsValid(abilitySystem))
+	{
+		return;
+	}
+
+	TArray<FGameplayAbilitySpec*> matchingAbilities;
+	abilitySystem->GetActivatableGameplayAbilitySpecsByAllMatchingTags(abilityTags, matchingAbilities, MatchExactTag);
+
+	for (FGameplayAbilitySpec* spec : matchingAbilities)
+	{
+		TArray<UGameplayAbility*> abilityInstances = spec->GetAbilityInstances();
+		for (UGameplayAbility* active : abilityInstances)
+		{
+			abilities.Add(active);
+		}
+	}
+}
+
+void ARPGCharacter::ApplyGameplayEffect(TSubclassOf<UGameplayEffect> effect)
+{
+	if (!IsValid(abilitySystem) || !IsValid(effect))
+	{
+		return;
+	}
+
+	FGameplayEffectContextHandle context = abilitySystem->MakeEffectContext();
+	context.AddSourceObject(this);
+
+	FGameplayEffectSpecHandle handle = abilitySystem->MakeOutgoingSpec(effect, characterLevel, context);
+
+	if (handle.IsValid())
+	{
+		FActiveGameplayEffectHandle activeHandle = abilitySystem->ApplyGameplayEffectSpecToTarget(*handle.Data.Get(), abilitySystem);
+	}
+}
+
+bool ARPGCharacter::CanApplyGameplayEffect(TSubclassOf<UGameplayEffect> effect)
+{
+	if (!IsValid(abilitySystem) || !IsValid(effect))
+	{
+		return false;
+	}
+	FGameplayEffectContextHandle contextHandle = abilitySystem->MakeEffectContext();
+	contextHandle.AddSourceObject(this);
+	return abilitySystem->CanApplyAttributeModifiers(effect->GetDefaultObject<UGameplayEffect>(), characterLevel, contextHandle);
 }
 
 // Called when the game starts or when spawned
@@ -152,7 +198,7 @@ void ARPGCharacter::setMeleeAbilities()
 		return;
 	}
 
-	MeleeAbilitySpecHandle = abilitySystem->GiveAbility(FGameplayAbilitySpec(MeleeSwordAbility, GetCharacterLevel(),INDEX_NONE, this));
+	MeleeAbilitySpecHandle = abilitySystem->GiveAbility(FGameplayAbilitySpec(MeleeSwordAbility, GetCharacterLevel(), INDEX_NONE, this));
 }
 
 // Called every frame
@@ -238,8 +284,6 @@ void ARPGCharacter::ApplyDefaultAttributeEffects()
 			FActiveGameplayEffectHandle activeHandle = abilitySystem->ApplyGameplayEffectSpecToTarget(*handle.Data.Get(), abilitySystem);
 		}
 	}
-	
-
 }
 
 void ARPGCharacter::RemoveDefaultAttributeEffects()
