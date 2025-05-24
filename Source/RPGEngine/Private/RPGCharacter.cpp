@@ -292,3 +292,11 @@ void ARPGCharacter::RemoveDefaultAttributeEffects()
 	query.EffectSource = this;
 	abilitySystem->RemoveActiveEffects(query);
 }
+
+void ARPGCharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const
+{
+	if (IsValid(abilitySystem))
+	{
+		abilitySystem->GetOwnedGameplayTags(TagContainer);
+	}
+}

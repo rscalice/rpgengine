@@ -9,7 +9,7 @@
 #include "RPGCharacter.generated.h"
 
 UCLASS()
-class RPGENGINE_API ARPGCharacter : public ACharacter, public IAbilitySystemInterface
+class RPGENGINE_API ARPGCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface
 {
 	GENERATED_BODY()
 
@@ -132,4 +132,7 @@ public:
 
 	virtual void ApplyDefaultAttributeEffects();
 	virtual void RemoveDefaultAttributeEffects();
+
+	// Inherited via IGameplayTagAssetInterface
+	void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
 };
