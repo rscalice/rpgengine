@@ -223,6 +223,7 @@ UAbilitySystemComponent* ARPGCharacter::GetAbilitySystemComponent() const
 void ARPGCharacter::PossessedBy(AController* newController)
 {
 	Super::PossessedBy(newController);
+	teamID = FGenericTeamId(Fraction);
 
 	if (!abilitySystem)
 	{
@@ -299,4 +300,9 @@ void ARPGCharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) co
 	{
 		abilitySystem->GetOwnedGameplayTags(TagContainer);
 	}
+}
+
+FGenericTeamId ARPGCharacter::GetGenericTeamId() const
+{
+	return teamID;
 }

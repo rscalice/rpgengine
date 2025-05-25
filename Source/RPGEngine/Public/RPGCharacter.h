@@ -6,10 +6,23 @@
 #include "AbilitySystemInterface.h"
 #include "GAS/RPGAttributeSet.h"
 #include "GameFramework/Character.h"
+#include <GenericTeamAgentInterface.h>
+
 #include "RPGCharacter.generated.h"
 
+UENUM(BlueprintType)
+enum EFraction : int
+{
+	Friends = 0,
+	Enemies,
+	Civilians = 255
+};
+
 UCLASS()
-class RPGENGINE_API ARPGCharacter : public ACharacter, public IAbilitySystemInterface, public IGameplayTagAssetInterface
+class RPGENGINE_API ARPGCharacter : public ACharacter,
+	public IAbilitySystemInterface,
+	public IGameplayTagAssetInterface,
+	public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -65,17 +78,14 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "RPG Responses")
 	void OnDead();
 
-
 	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee|Sword")
 	bool ActivateMeleeSwordAbility(bool allowRemote = true);
 
 	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee")
 	virtual void GetActiveAbilitiesWithTag(FGameplayTagContainer abilityTags, TArray<UGameplayAbility*>& abilities, bool MatchExactTag);
 
-
 	UFUNCTION(BlueprintCallable, Category = "RPG Abilities")
 	virtual void ApplyGameplayEffect(TSubclassOf<UGameplayEffect> effect);
-
 
 	UFUNCTION(BlueprintCallable, Category = "RPG Abilities")
 	virtual bool CanApplyGameplayEffect(TSubclassOf<UGameplayEffect> effect);
@@ -111,6 +121,11 @@ protected:
 
 	virtual void setMeleeAbilities();
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Teams")
+	TEnumAsByte<EFraction> Fraction = EFraction::Civilians;
+
+	FGenericTeamId teamID;
+
 public:
 
 	// Called every frame
@@ -135,4 +150,7 @@ public:
 
 	// Inherited via IGameplayTagAssetInterface
 	void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
+
+	virtual FGenericTeamId GetGenericTeamId() const override;
+
 };
