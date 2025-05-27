@@ -8,8 +8,8 @@
 ARPGCharacter::ARPGCharacter() :
 	abilitySystem(nullptr),
 	attributeSet(nullptr),
-	enableTestAbilities(false),
-	characterLevel(1)
+	characterLevel(1),
+	enableTestAbilities(false)
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -168,6 +168,41 @@ bool ARPGCharacter::CanApplyGameplayEffect(TSubclassOf<UGameplayEffect> effect)
 	return abilitySystem->CanApplyAttributeModifiers(effect->GetDefaultObject<UGameplayEffect>(), characterLevel, contextHandle);
 }
 
+bool ARPGCharacter::EquipWeapon(ARPGWeapon* Weapon, TEnumAsByte<EWeaponSlot> Slot)
+{
+	if (!IsValid(Weapon))
+	{
+		return false;
+	}
+
+	switch (Slot)
+	{
+	case EWeaponSlot::RightHand:
+		EquipRightHand(Weapon);
+		break;
+	case EWeaponSlot::LeftHand:
+		EquipLeftHand(Weapon);
+		break;
+	default:
+		return false;
+		break;
+	}
+
+	return true;
+}
+
+bool ARPGCharacter::ActivateAbilityBySlot(TEnumAsByte<EAbilitySlot> Slot, bool AllowRemoteActivation)
+{
+	if (!IsValid(abilitySystem) || !SlotAbilityHandles.Contains(Slot))
+	{
+		return false;
+	}
+
+	auto SpecHandle = SlotAbilityHandles.Find(Slot);
+	return abilitySystem->TryActivateAbility(FGameplayAbilitySpecHandle(*SpecHandle));
+
+}
+
 // Called when the game starts or when spawned
 void ARPGCharacter::BeginPlay()
 {
@@ -305,4 +340,56 @@ void ARPGCharacter::GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) co
 FGenericTeamId ARPGCharacter::GetGenericTeamId() const
 {
 	return teamID;
+}
+
+void ARPGCharacter::ClearAbilitySlot(TEnumAsByte<EAbilitySlot> AbilitySlot)
+{
+	if (SlotAbilityHandles.IsEmpty())
+	{
+		return;
+	}
+
+	if (SlotAbilityHandles.Contains(AbilitySlot))
+	{
+		auto SpecHandle = SlotAbilityHandles.Find(AbilitySlot);
+		abilitySystem->ClearAbility(*SpecHandle);
+
+		SlotAbilityHandles.Remove(AbilitySlot);
+	}
+}
+
+void ARPGCharacter::AddAbilityToSlot(TSubclassOf<UGameplayAbility> NewAbility, TEnumAsByte<EAbilitySlot> AbilitySlot)
+{
+	if (!IsValid(abilitySystem))
+	{
+		return;
+	}
+
+	auto SpecHandle = abilitySystem->GiveAbility(FGameplayAbilitySpec(NewAbility, GetCharacterLevel(), INDEX_NONE));
+
+	if (SpecHandle.IsValid())
+	{
+		SlotAbilityHandles.Add(AbilitySlot, SpecHandle);
+	}
+}
+
+void ARPGCharacter::EquipRightHand(ARPGWeapon* Weapon)
+{
+	if (!IsValid(abilitySystem) || !IsValid(Weapon))
+		return;
+
+	ClearAbilitySlot(EAbilitySlot::LightAttack);
+	ClearAbilitySlot(EAbilitySlot::HeavyAttack);
+	AddAbilityToSlot(Weapon->LightAttackAbility, EAbilitySlot::LightAttack);
+	AddAbilityToSlot(Weapon->HeavyAttackAbility, EAbilitySlot::HeavyAttack);
+}
+
+void ARPGCharacter::EquipLeftHand(ARPGWeapon* Weapon)
+{
+	if (!IsValid(abilitySystem) || !IsValid(Weapon))
+		return;
+
+
+	ClearAbilitySlot(EAbilitySlot::SecondaryAbility);
+	AddAbilityToSlot(Weapon->LightAttackAbility, EAbilitySlot::SecondaryAbility);
 }

@@ -7,6 +7,7 @@
 #include "GAS/RPGAttributeSet.h"
 #include "GameFramework/Character.h"
 #include <GenericTeamAgentInterface.h>
+#include "RPGWeapon.h"
 
 #include "RPGCharacter.generated.h"
 
@@ -16,6 +17,21 @@ enum EFraction : int
 	Friends = 0,
 	Enemies,
 	Civilians = 255
+};
+
+UENUM(BlueprintType)
+enum EAbilitySlot : int
+{
+	LightAttack,
+	HeavyAttack,
+	SecondaryAbility
+};
+
+UENUM(BlueprintType)
+enum EWeaponSlot : int
+{
+	RightHand,
+	LeftHand
 };
 
 UCLASS()
@@ -78,7 +94,7 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "RPG Responses")
 	void OnDead();
 
-	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee|Sword")
+	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee|Sword", meta = (Deprecated, DeprecatedMessage = "Use ActivateAbility"))
 	bool ActivateMeleeSwordAbility(bool allowRemote = true);
 
 	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee")
@@ -89,6 +105,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "RPG Abilities")
 	virtual bool CanApplyGameplayEffect(TSubclassOf<UGameplayEffect> effect);
+
+	UFUNCTION(BlueprintCallable, Category = "RPG Abilities")
+	virtual bool EquipWeapon(ARPGWeapon* Weapon, TEnumAsByte<EWeaponSlot> Slot);
+
+	UFUNCTION(BlueprintCallable, Category = "RPG Abilities")
+	virtual bool ActivateAbilityBySlot(TEnumAsByte<EAbilitySlot> Slot, bool AllowRemoteActivation = true);
 
 protected:
 	// Called when the game starts or when spawned
@@ -126,6 +148,7 @@ protected:
 
 	FGenericTeamId teamID;
 
+	TMap<TEnumAsByte<EAbilitySlot>, FGameplayAbilitySpecHandle> SlotAbilityHandles;
 public:
 
 	// Called every frame
@@ -152,5 +175,11 @@ public:
 	void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
 
 	virtual FGenericTeamId GetGenericTeamId() const override;
+
+protected:
+	virtual void ClearAbilitySlot(TEnumAsByte<EAbilitySlot> AbilitySlot);
+	virtual void AddAbilityToSlot(TSubclassOf<UGameplayAbility> NewAbility, TEnumAsByte<EAbilitySlot> AbilitySlot);
+	virtual void EquipRightHand(ARPGWeapon* Weapon);
+	virtual void EquipLeftHand(ARPGWeapon* Weapon);
 
 };
