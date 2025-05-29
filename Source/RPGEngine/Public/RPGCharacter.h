@@ -179,7 +179,7 @@ public:
 protected:
 	virtual void ClearAbilitySlot(TEnumAsByte<EAbilitySlot> AbilitySlot);
 	virtual void AddAbilityToSlot(TSubclassOf<UGameplayAbility> NewAbility, TEnumAsByte<EAbilitySlot> AbilitySlot);
-	virtual void EquipRightHand(ARPGWeapon* Weapon);
-	virtual void EquipLeftHand(ARPGWeapon* Weapon);
+	virtual bool EquipRightHand(ARPGWeapon* Weapon);
+	virtual bool EquipLeftHand(ARPGWeapon* Weapon);
 
 };

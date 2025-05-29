@@ -178,17 +178,16 @@ bool ARPGCharacter::EquipWeapon(ARPGWeapon* Weapon, TEnumAsByte<EWeaponSlot> Slo
 	switch (Slot)
 	{
 	case EWeaponSlot::RightHand:
-		EquipRightHand(Weapon);
+		return EquipRightHand(Weapon);
 		break;
 	case EWeaponSlot::LeftHand:
-		EquipLeftHand(Weapon);
+		return EquipLeftHand(Weapon);
 		break;
 	default:
-		return false;
 		break;
 	}
 
-	return true;
+	return false;
 }
 
 bool ARPGCharacter::ActivateAbilityBySlot(TEnumAsByte<EAbilitySlot> Slot, bool AllowRemoteActivation)
@@ -373,23 +372,25 @@ void ARPGCharacter::AddAbilityToSlot(TSubclassOf<UGameplayAbility> NewAbility, T
 	}
 }
 
-void ARPGCharacter::EquipRightHand(ARPGWeapon* Weapon)
+bool ARPGCharacter::EquipRightHand(ARPGWeapon* Weapon)
 {
 	if (!IsValid(abilitySystem) || !IsValid(Weapon))
-		return;
+		return false;
 
 	ClearAbilitySlot(EAbilitySlot::LightAttack);
 	ClearAbilitySlot(EAbilitySlot::HeavyAttack);
 	AddAbilityToSlot(Weapon->LightAttackAbility, EAbilitySlot::LightAttack);
 	AddAbilityToSlot(Weapon->HeavyAttackAbility, EAbilitySlot::HeavyAttack);
+	return true;
 }
 
-void ARPGCharacter::EquipLeftHand(ARPGWeapon* Weapon)
+bool ARPGCharacter::EquipLeftHand(ARPGWeapon* Weapon)
 {
 	if (!IsValid(abilitySystem) || !IsValid(Weapon))
-		return;
+		return false;
 
 
 	ClearAbilitySlot(EAbilitySlot::SecondaryAbility);
-	AddAbilityToSlot(Weapon->LightAttackAbility, EAbilitySlot::SecondaryAbility);
+	AddAbilityToSlot(Weapon->SecondaryAttackAbility, EAbilitySlot::SecondaryAbility);
+	return true;
 }
