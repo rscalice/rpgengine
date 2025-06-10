@@ -12,9 +12,10 @@
 #include "RPGCharacter.generated.h"
 
 UENUM(BlueprintType)
-enum EFraction : int
+enum EFaction : int
 {
-	Friends = 0,
+	Player = 0,
+	Friendlies,
 	Enemies,
 	Civilians = 255
 };
@@ -94,9 +95,6 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "RPG Responses")
 	void OnDead();
 
-	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee|Sword", meta = (Deprecated, DeprecatedMessage = "Use ActivateAbility"))
-	bool ActivateMeleeSwordAbility(bool allowRemote = true);
-
 	UFUNCTION(BlueprintCallable, Category = "RPG Abilities|Melee")
 	virtual void GetActiveAbilitiesWithTag(FGameplayTagContainer abilityTags, TArray<UGameplayAbility*>& abilities, bool MatchExactTag);
 
@@ -125,7 +123,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "RPG Attributes")
 	int32 characterLevel;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RPG Attributes|Debug")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RPG Abilities")
 	TArray<TSubclassOf<class UGameplayEffect>> defaultEffects;
 
 	UPROPERTY(EditAnywhere, Category = "RPG Abilities|Debug")
@@ -136,19 +134,13 @@ protected:
 
 	virtual void setTestAbilities();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RPG Abilities|Melee|Sword")
-	TSubclassOf<class UGameplayAbility> MeleeSwordAbility;
-
-	FGameplayAbilitySpecHandle MeleeAbilitySpecHandle;
-
-	virtual void setMeleeAbilities();
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Teams")
-	TEnumAsByte<EFraction> Fraction = EFraction::Civilians;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RPG Abilities|Teams")
+	TEnumAsByte<EFaction> Faction = EFaction::Civilians;
 
 	FGenericTeamId teamID;
 
 	TMap<TEnumAsByte<EAbilitySlot>, FGameplayAbilitySpecHandle> SlotAbilityHandles;
+
 public:
 
 	// Called every frame

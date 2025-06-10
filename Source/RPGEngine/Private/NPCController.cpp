@@ -7,6 +7,7 @@
 ETeamAttitude::Type ANPCController::GetTeamAttitudeTowards(const AActor& otherActor) const
 {
 	const APawn* OtherPawn = Cast<APawn>(&otherActor);
+	FGenericTeamId MyTeamId = GetGenericTeamId();
 
 	if (!IsValid(OtherPawn))
 	{
@@ -22,7 +23,6 @@ ETeamAttitude::Type ANPCController::GetTeamAttitudeTowards(const AActor& otherAc
 	}
 
 	FGenericTeamId otherTeamId = FGenericTeamId();
-
 	if (CharacterTeamAgent != nullptr)
 	{
 		otherTeamId = CharacterTeamAgent->GetGenericTeamId();
@@ -32,24 +32,28 @@ ETeamAttitude::Type ANPCController::GetTeamAttitudeTowards(const AActor& otherAc
 		otherTeamId = ControllerTeamAgent->GetGenericTeamId();
 	}
 
-	FGenericTeamId MyTeamId = GetGenericTeamId();
 
-	if (otherTeamId == EFraction::Civilians)
+	ETeamAttitude::Type returnAttitude;
+	if (otherTeamId == EFaction::Civilians)
 	{
-		return ETeamAttitude::Neutral;
+		returnAttitude = ETeamAttitude::Neutral;
 	}
 	else if (otherTeamId == MyTeamId)
 	{
-		return ETeamAttitude::Friendly;
+		returnAttitude = ETeamAttitude::Friendly;
+	}
+	else
+	{
+		returnAttitude = ETeamAttitude::Hostile;
 	}
 
-	return ETeamAttitude::Hostile;
+	//UE_LOG(LogTemp, Warning, TEXT("My Team (%d) | Their Team (%d)"), (int) MyTeamId, (int) otherTeamId);
+	return returnAttitude;
 }
 
 
 void ANPCController::SetGenericTeamId(const FGenericTeamId& newTeamId)
 {
 	Super::SetGenericTeamId(newTeamId);
-
 	UAIPerceptionSystem::GetCurrent(GetWorld())->UpdateListener(*GetAIPerceptionComponent());
 }
