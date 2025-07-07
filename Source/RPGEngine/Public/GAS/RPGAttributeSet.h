@@ -15,7 +15,7 @@
 	GAMEPLAYATTRIBUTE_VALUE_INITTER(PropertyName)
 
 /**
- * RPG Character Attribute
+ * RPG | Character Attribute
  */
 UCLASS()
 class RPGENGINE_API URPGAttributeSet : public UAttributeSet
@@ -31,35 +31,35 @@ public:
 	virtual void PreAttributeChange(const FGameplayAttribute& attribute, float& NewValue) override;
 
 
-	UPROPERTY(BlueprintReadOnly, Category = "RPG Attributes", ReplicatedUsing = OnRep_Health)
+	UPROPERTY(BlueprintReadOnly, Category = "RPG | Attributes", ReplicatedUsing = OnRep_Health)
 	FGameplayAttributeData Health;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, Health);
 
-	UPROPERTY(BlueprintReadOnly, Category = "RPG Attributes", ReplicatedUsing = OnRep_MaxHealth)
+	UPROPERTY(BlueprintReadOnly, Category = "RPG | Attributes", ReplicatedUsing = OnRep_MaxHealth)
 	FGameplayAttributeData MaxHealth;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, MaxHealth);
 
-	UPROPERTY(BlueprintReadOnly, Category = "RPG Attributes", ReplicatedUsing = OnRep_Stamina)
+	UPROPERTY(BlueprintReadOnly, Category = "RPG | Attributes", ReplicatedUsing = OnRep_Stamina)
 	FGameplayAttributeData Stamina;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, Stamina);
 
-	UPROPERTY(BlueprintReadOnly, Category = "RPG Attributes", ReplicatedUsing = OnRep_MaxStamina)
+	UPROPERTY(BlueprintReadOnly, Category = "RPG | Attributes", ReplicatedUsing = OnRep_MaxStamina)
 	FGameplayAttributeData MaxStamina;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, MaxStamina);
 
-	UPROPERTY(BlueprintReadOnly, Category = "RPG Attributes", ReplicatedUsing = OnRep_Adrenaline)
+	UPROPERTY(BlueprintReadOnly, Category = "RPG | Attributes", ReplicatedUsing = OnRep_Adrenaline)
 	FGameplayAttributeData Adrenaline;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, Adrenaline);
 
-	UPROPERTY(BlueprintReadOnly, Category = "RPG Attributes", ReplicatedUsing = OnRep_MaxAdrenaline)
+	UPROPERTY(BlueprintReadOnly, Category = "RPG | Attributes", ReplicatedUsing = OnRep_MaxAdrenaline)
 	FGameplayAttributeData MaxAdrenaline;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, MaxAdrenaline);
 
-	UPROPERTY(BlueprintReadOnly, Category = "RPG Attributes", ReplicatedUsing = OnRep_Experience)
+	UPROPERTY(BlueprintReadOnly, Category = "RPG | Attributes", ReplicatedUsing = OnRep_Experience)
 	FGameplayAttributeData Experience;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, Experience);
 
-	UPROPERTY(BlueprintReadOnly, Category = "RPG Attributes", ReplicatedUsing = OnRep_MaxExperience)
+	UPROPERTY(BlueprintReadOnly, Category = "RPG | Attributes", ReplicatedUsing = OnRep_MaxExperience)
 	FGameplayAttributeData MaxExperience;
 	ATTRIBUTE_ACCESSORS(URPGAttributeSet, MaxExperience);
 
