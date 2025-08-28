@@ -19,6 +19,7 @@ ETeamAttitude::Type ANPCController::GetTeamAttitudeTowards(const AActor& otherAc
 
 	if (CharacterTeamAgent == nullptr && ControllerTeamAgent == nullptr)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Teams"));
 		return ETeamAttitude::Neutral;
 	}
 
@@ -47,13 +48,13 @@ ETeamAttitude::Type ANPCController::GetTeamAttitudeTowards(const AActor& otherAc
 		returnAttitude = ETeamAttitude::Hostile;
 	}
 
-	//UE_LOG(LogTemp, Warning, TEXT("My Team (%d) | Their Team (%d)"), (int) MyTeamId, (int) otherTeamId);
 	return returnAttitude;
 }
-
 
 void ANPCController::SetGenericTeamId(const FGenericTeamId& newTeamId)
 {
 	Super::SetGenericTeamId(newTeamId);
+
+
 	UAIPerceptionSystem::GetCurrent(GetWorld())->UpdateListener(*GetAIPerceptionComponent());
 }

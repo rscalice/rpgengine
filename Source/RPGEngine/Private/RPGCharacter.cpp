@@ -17,6 +17,7 @@ ARPGCharacter::ARPGCharacter() :
 	abilitySystem = CreateDefaultSubobject<URPGAbilitySystemComponent>("AbilitySystemComponent");
 	attributeSet = CreateDefaultSubobject<URPGAttributeSet>("AttributeSet");
 
+	SetGenericTeamId((FGenericTeamId) Faction);
 	if (IsValid(abilitySystem))
 	{
 		abilitySystem->SetIsReplicated(true);

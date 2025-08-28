@@ -16,6 +16,8 @@ class RPGENGINE_API ANPCController : public AAIController
 	GENERATED_BODY()
 	
 public:
+
+	UFUNCTION(BlueprintCallable)
 	void SetGenericTeamId(const FGenericTeamId& newTeamId) override;
 
 protected:
